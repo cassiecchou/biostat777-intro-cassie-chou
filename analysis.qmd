@@ -1,5 +1,7 @@
 ---
 title: "Analysis"
+bibliography: citations.bib
+nocite: '@*'
 ---
 
 ![Source: [Adobe Stock](https://stock.adobe.com/images/a-coal-fired-power-station-in-the-distance-in-agricultural-landscape-pocerady-czech-republic/197388311?prev_url=detail&asset_id=197388311)](co2pollution.jpg){width="1195"}
