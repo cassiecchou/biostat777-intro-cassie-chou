@@ -1,0 +1,99 @@
+---
+title: "Analysis"
+---
+
+![Source: [Adobe Stock](https://stock.adobe.com/images/a-coal-fired-power-station-in-the-distance-in-agricultural-landscape-pocerady-czech-republic/197388311?prev_url=detail&asset_id=197388311)](co2pollution.jpg){width="1195"}
+
+## Question
+
+Which countries have had the highest CO2 Emissions Per-Capita over time (last 222 years), and how have CO2 emissions in these countries changed over time?
+
+## Intended Audience
+
+The intended audience of this analysis is policymakers, world leaders, climate change activists, researchers, and anyone interested in understanding and reducing CO2 emissions.
+
+## Dataset
+
+This data comes from the Gapminder dataset (linked [here](https://www.gapminder.org/data/)). Gapminder has widely available data about global trends and proportions. I used the CO2 Emissions per Capita dataset within the Gapminder data.
+
+::: callout-note
+This data includes CO2 emissions per-capita. This means that countries with smaller populations may have higher CO2 emissions per-capita, but lower CO2 emissions overall.
+:::
+
+### Data Dictionary
+
+| Variable Name | Class     | Description                              |
+|---------------|-----------|------------------------------------------|
+| Country       | character | Name of country of CO2 emission reading  |
+| Year          | character | Year that CO2 emission reading was taken |
+| CO2_Emissions | double    | Annual per-capita CO2 emissions          |
+
+::: column-margin
+\*This data dictionary is for the modified (data wrangled) dataset. The original dataset included the country variable, but listed each year as its own double variable. This double variable represented the per-capita CO2 emission reading.
+:::
+
+## Analysis
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+co2_data <- read.csv("co2_pcap_cons.csv")
+
+co2_data <- co2_data %>% mutate(X2003 = as.numeric(X2003), X2004 = as.numeric(X2004), X2005 = as.numeric(X2005), X2006 = as.numeric(X2006), X2011 = as.numeric(X2011), X2012 = as.numeric(X2012), X2013 = as.numeric(X2013))
+
+co2_data <- co2_data %>% pivot_longer(cols = starts_with("X"), names_to = "Year", names_prefix = "X", values_to = "CO2_Emissions", values_drop_na = TRUE)
+
+co2_data
+
+co2_total <- co2_data %>% group_by(country) %>% summarise(tot_CO2 = sum(CO2_Emissions)) %>% top_n(15, tot_CO2) %>% arrange(desc(tot_CO2))
+
+head(co2_total)
+
+ggplot(co2_total, aes(x = reorder(country, tot_CO2), y = tot_CO2, fill = country)) + geom_bar(stat = "identity") + theme(axis.text.x = element_text(angle = 50, hjust = 1, size = 8), legend.text = element_text(size = 10), legend.key.size = unit(3, 'mm')) + xlab("Country") + ylab("Total Per-Capita CO2 Emissions (in tonnes)") + labs(title = "Per-Capita CO2 Emissions of the 15 Highest-Emitting Countries", subtitle = "Sum of Per-Capita CO2 Emissions from 1800-2022", caption = "Data Source: Gapminder") + guides(fill=guide_legend(title="Country"))
+
+```
+
+::: callout-tip
+## Interpretation
+
+At nearly 2250 tonnes of CO2 emissions per-capita, the USA has had the highest per-capita CO2 emissions since 1800. This is over twice the per-capita CO2 emissions as the country with the 15th highest CO2 Emissions, Trinidad and Tobago.
+:::
+
+```{r}
+top15_countries <- co2_total$country
+co2_data_top15 <- co2_data %>% filter(country %in% top15_countries)
+
+ggplot(co2_data_top15, aes(x = Year, y = CO2_Emissions, group = country, color = country)) + facet_wrap(~country) + geom_line() + theme(axis.text.x = element_text(angle = 50, hjust = 1, size = 8), legend.text = element_text(size = 10), legend.key.size = unit(3, 'mm')) + scale_x_discrete(breaks = seq(1800, 2030, by = 20)) + xlab("Year") + ylab("Annual Per-Capita CO2 Emissions (in tonnes)") + guides(color=guide_legend(title="Country")) + labs(title = "Changes in CO2 Emissions Over Time", subtitle = "Top 15 Countries with the Highest Total Per-Capita CO2 Emissions from 1800-2022", caption = "Data Source: Gapminder")
+
+
+
+```
+
+::: callout-tip
+## Interpretation
+
+Some countries, like the UK, US, and Australia, have steadily increasing annual CO2 emissions per-capita, while others have low CO2 emissions followed by large spikes in their CO2 emissions, like Brunei, Kuwait, and Qatar.
+:::
+
+```{r}
+ggplot(co2_data_top15, aes(x = country, y = CO2_Emissions, fill = country)) + geom_boxplot() + theme(axis.text.x = element_text(angle = 50, hjust = 1, size = 8), legend.text = element_text(size = 10), legend.key.size = unit(3, 'mm')) + xlab("Country") + ylab("Annual Per-Capita CO2 Emissions (in tonnes)") + labs(title = "Top 15 Countries with the Highest Per-Capita CO2 Emissions", subtitle = "Distribution of Per-Capital CO2 Emissions from Year 1800-2022", caption = "Data Source: Gapminder") + guides(fill=guide_legend(title="Country"))
+
+```
+
+::: callout-tip
+## Interpretation
+
+This shows that some countries (like the USA, Australia, Canada, and the Netherlands) have relatively consistent levels of annual per-capita CO2 emissions. Others, like Qatar, Singapore, and the UAE, have mostly low levels of annual per-capita CO2 emissions, with a few large (high-emissions) outliers.
+:::
+
+## Summary
+
+## Functions Used
+
+`dplyr` package: `mutate()`, `group_by()`, `summarise()`, `top_n()`, `arrange()`, `desc()`
+
+`tidr` package: `pivot_longer()`
+
+`ggplot2` package: `geom_bar()` , `geom_line()`, `geom_boxplot()`

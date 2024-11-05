@@ -2,8 +2,30 @@
 title: "About"
 ---
 
-About this site
+# Bio
 
-```{r}
-1 + 1
-```
+Hi! I'm a first-year master's student in the ScM Biostatistics Program at Johns Hopkins Bloomberg School of Public Health. I'm originally from the Bay Area, California, and completed my undergraduate education in Los Angeles, California at UCLA. My research interests include environmental health, climate change, health disparities, policy interventions, machine learning, and their intersections. I'm passionate about social justice and advocacy, and value impact-based research. I also care deeply about teaching and mentoring, and hope to continue the line of incredible mentors that have helped me shape my path.
+
+# Education
+
+**Johns Hopkins Bloomberg School of Public Health** \| Baltimore, MD
+
+ScM in Biostatistics \| August 2024 - May 2026\*
+
+**University of California, Los Angeles (UCLA)** \| Los Angeles, CA
+
+B.S. in Computational and Systems Biology, Biological Data Science Track, Minor in Statistics and Data Science \| September 2020 - June 2024
+
+# Experience
+
+**Zaitlen Lab at UCLA** \| Undergraduate Student Researcher \| February 2023 - June 2024
+
+**Health Career Connection: El Camino Health** \| Acute Rehabilitation Center Administrative Intern \| June 2023 - September 2023
+
+**Health Plan of San Mateo** \| Provider Services Dental Intern \| June 2022 - August 2022
+
+**City of Hope** \| Eugene and Ruth Roberts Summer Academy Intern \| June 2021 - August 2021
+
+**DemocraShe** \| Workshop Facilitator (Present), Previously Leadership Team Member \| May 2021 - PRESENT
+
+**Bruin Democrats at UCLA** \| External Vice President (23-24), Internal Vice President (22-23), Social Director (21-22), Freshman Representative (20-21) \| September 2020 - June 2024
