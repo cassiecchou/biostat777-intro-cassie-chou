@@ -1,0 +1,65 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Cassie Chou",
+    "section": "",
+    "text": "Hi! My name is Cassie Chou, and I’m a first-year master’s student in the ScM Biostatistics program at Johns Hopkins Bloomberg School of Public Health. I’m passionate about social justice, environmental health, advocacy and policy, and their intersections. In my free time, I enjoy cooking, playing board games, watching baseball, and hanging out with my dog, Buffy (pictured below)!"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Bio\nHi! I’m a first-year master’s student in the ScM Biostatistics Program at Johns Hopkins Bloomberg School of Public Health. I’m originally from the Bay Area, California, and completed my undergraduate education in Los Angeles, California at UCLA. My research interests include environmental health, climate change, health disparities, policy interventions, machine learning, and their intersections. I’m passionate about social justice and advocacy, and value impact-based research. I also care deeply about teaching and mentoring, and hope to continue the line of incredible mentors that have helped me shape my path.\n\n\nEducation\nJohns Hopkins Bloomberg School of Public Health | Baltimore, MD\nScM in Biostatistics | August 2024 - May 2026*\nUniversity of California, Los Angeles (UCLA) | Los Angeles, CA\nB.S. in Computational and Systems Biology, Biological Data Science Track, Minor in Statistics and Data Science | September 2020 - June 2024\n\n\nExperience\nZaitlen Lab at UCLA | Undergraduate Student Researcher | February 2023 - June 2024\nHealth Career Connection: El Camino Health | Acute Rehabilitation Center Administrative Intern | June 2023 - September 2023\nHealth Plan of San Mateo | Provider Services Dental Intern | June 2022 - August 2022\nCity of Hope | Eugene and Ruth Roberts Summer Academy Intern | June 2021 - August 2021\nDemocraShe | Workshop Facilitator (Present), Previously Leadership Team Member | May 2021 - PRESENT\nBruin Democrats at UCLA | External Vice President (23-24), Internal Vice President (22-23), Social Director (21-22), Freshman Representative (20-21) | September 2020 - June 2024"
+  },
+  {
+    "objectID": "analysis.html",
+    "href": "analysis.html",
+    "title": "Analysis",
+    "section": "",
+    "text": "Source: Adobe Stock"
+  },
+  {
+    "objectID": "analysis.html#question",
+    "href": "analysis.html#question",
+    "title": "Analysis",
+    "section": "Question",
+    "text": "Question\nWhich countries have had the highest CO2 Emissions Per-Capita over time (last 222 years), and how have CO2 emissions in these countries changed over time?"
+  },
+  {
+    "objectID": "analysis.html#intended-audience",
+    "href": "analysis.html#intended-audience",
+    "title": "Analysis",
+    "section": "Intended Audience",
+    "text": "Intended Audience\nThe intended audience of this analysis is policymakers, world leaders, climate change activists, researchers, and anyone interested in understanding and reducing CO2 emissions."
+  },
+  {
+    "objectID": "analysis.html#dataset",
+    "href": "analysis.html#dataset",
+    "title": "Analysis",
+    "section": "Dataset",
+    "text": "Dataset\nThis data comes from the Gapminder dataset (linked here). Gapminder has widely available data about global trends and proportions. I used the CO2 Emissions per Capita dataset within the Gapminder data.\n\n\n\n\n\n\nNote\n\n\n\nThis data includes CO2 emissions per-capita. This means that countries with smaller populations may have higher CO2 emissions per-capita, but lower CO2 emissions overall.\n\n\n\nData Dictionary\n\n\n\nVariable Name\nClass\nDescription\n\n\n\n\nCountry\ncharacter\nName of country of CO2 emission reading\n\n\nYear\ncharacter\nYear that CO2 emission reading was taken\n\n\nCO2_Emissions\ndouble\nAnnual per-capita CO2 emissions\n\n\n\n\n\n*This data dictionary is for the modified (data wrangled) dataset. The original dataset included the country variable, but listed each year as its own double variable. This double variable represented the per-capita CO2 emission reading."
+  },
+  {
+    "objectID": "analysis.html#analysis",
+    "href": "analysis.html#analysis",
+    "title": "Analysis",
+    "section": "Analysis",
+    "text": "Analysis\n\nlibrary(dplyr)\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\nlibrary(ggplot2)\nlibrary(tidyr)\n\nco2_data &lt;- read.csv(\"co2_pcap_cons.csv\")\n\nco2_data &lt;- co2_data %&gt;% mutate(X2003 = as.numeric(X2003), X2004 = as.numeric(X2004), X2005 = as.numeric(X2005), X2006 = as.numeric(X2006), X2011 = as.numeric(X2011), X2012 = as.numeric(X2012), X2013 = as.numeric(X2013))\n\nWarning: There were 7 warnings in `mutate()`.\nThe first warning was:\nℹ In argument: `X2003 = as.numeric(X2003)`.\nCaused by warning:\n! NAs introduced by coercion\nℹ Run `dplyr::last_dplyr_warnings()` to see the 6 remaining warnings.\n\nco2_data &lt;- co2_data %&gt;% pivot_longer(cols = starts_with(\"X\"), names_to = \"Year\", names_prefix = \"X\", values_to = \"CO2_Emissions\", values_drop_na = TRUE)\n\nco2_data\n\n# A tibble: 43,255 × 3\n   country     Year  CO2_Emissions\n   &lt;chr&gt;       &lt;chr&gt;         &lt;dbl&gt;\n 1 Afghanistan 1800          0.001\n 2 Afghanistan 1801          0.001\n 3 Afghanistan 1802          0.001\n 4 Afghanistan 1803          0.001\n 5 Afghanistan 1804          0.001\n 6 Afghanistan 1805          0.001\n 7 Afghanistan 1806          0.001\n 8 Afghanistan 1807          0.001\n 9 Afghanistan 1808          0.001\n10 Afghanistan 1809          0.001\n# ℹ 43,245 more rows\n\nco2_total &lt;- co2_data %&gt;% group_by(country) %&gt;% summarise(tot_CO2 = sum(CO2_Emissions)) %&gt;% top_n(15, tot_CO2) %&gt;% arrange(desc(tot_CO2))\n\nhead(co2_total)\n\n# A tibble: 6 × 2\n  country    tot_CO2\n  &lt;chr&gt;        &lt;dbl&gt;\n1 USA          2237.\n2 Kuwait       2175.\n3 Luxembourg   2167.\n4 Belgium      1874.\n5 UK           1795.\n6 Qatar        1632.\n\nggplot(co2_total, aes(x = reorder(country, tot_CO2), y = tot_CO2, fill = country)) + geom_bar(stat = \"identity\") + theme(axis.text.x = element_text(angle = 50, hjust = 1, size = 8), legend.text = element_text(size = 10), legend.key.size = unit(3, 'mm')) + xlab(\"Country\") + ylab(\"Total Per-Capita CO2 Emissions (in tonnes)\") + labs(title = \"Per-Capita CO2 Emissions of the 15 Highest-Emitting Countries\", subtitle = \"Sum of Per-Capita CO2 Emissions from 1800-2022\", caption = \"Data Source: Gapminder\") + guides(fill=guide_legend(title=\"Country\"))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInterpretation\n\n\n\nAt nearly 2250 tonnes of CO2 emissions per-capita, the USA has had the highest per-capita CO2 emissions since 1800. This is over twice the per-capita CO2 emissions as the country with the 15th highest CO2 Emissions, Trinidad and Tobago.\n\n\n\n\n*Total Per-Capita CO2 Emissions is calculated as the sum of annual per-capita CO2 emissions from 1800-2022.\n\ntop15_countries &lt;- co2_total$country\nco2_data_top15 &lt;- co2_data %&gt;% filter(country %in% top15_countries)\n\nggplot(co2_data_top15, aes(x = Year, y = CO2_Emissions, group = country, color = country)) + facet_wrap(~country) + geom_line() + theme(axis.text.x = element_text(angle = 50, hjust = 1, size = 8), legend.text = element_text(size = 10), legend.key.size = unit(3, 'mm')) + scale_x_discrete(breaks = seq(1800, 2030, by = 20)) + xlab(\"Year\") + ylab(\"Annual Per-Capita CO2 Emissions (in tonnes)\") + guides(color=guide_legend(title=\"Country\")) + labs(title = \"Changes in CO2 Emissions Over Time\", subtitle = \"Top 15 Countries with the Highest Total Per-Capita CO2 Emissions from 1800-2022\", caption = \"Data Source: Gapminder\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInterpretation\n\n\n\nSome countries, like the UK, US, and Australia, have steadily increasing annual CO2 emissions per-capita, while others have low CO2 emissions followed by large spikes in their CO2 emissions, like Brunei, Kuwait, and Qatar.\n\n\n\nggplot(co2_data_top15, aes(x = country, y = CO2_Emissions, fill = country)) + geom_boxplot() + theme(axis.text.x = element_text(angle = 50, hjust = 1, size = 8), legend.text = element_text(size = 10), legend.key.size = unit(3, 'mm')) + xlab(\"Country\") + ylab(\"Annual Per-Capita CO2 Emissions (in tonnes)\") + labs(title = \"Top 15 Countries with the Highest Per-Capita CO2 Emissions\", subtitle = \"Distribution of Per-Capital CO2 Emissions from Year 1800-2022\", caption = \"Data Source: Gapminder\") + guides(fill=guide_legend(title=\"Country\"))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInterpretation\n\n\n\nThis shows that some countries (like the USA, Australia, Canada, and the Netherlands) have relatively consistent levels of annual per-capita CO2 emissions. Others, like Qatar, Singapore, and the UAE, have mostly low levels of annual per-capita CO2 emissions, with a few large (high-emissions) outliers."
+  },
+  {
+    "objectID": "analysis.html#summary",
+    "href": "analysis.html#summary",
+    "title": "Analysis",
+    "section": "Summary",
+    "text": "Summary\nAs we see in our figures, the USA, Kuwait, Luxembourg, Belgium, and the UK have had the highest total per-capita CO2 emissions since 1800. Among the top 15 countries with the highest total per-capita CO2 emissions, the distributions of these emissions over time vary. Countries like the USA, Belgium, Australia, and the UK have had relatively consistent, slowly growing per-capita emissions, while others like Kuwait, Brunei, Qatar, and Luxembourg show very low per-capita emissions until a spike (and thus some very high outlier years) in recent times. Further investigation may examine the causes of these spikes in order to reduce emissions and prevent them from occurring again. A limitation of this analysis is that it analyzes per-capita CO2 emissions; countries with lower per-capita emissions but higher populations may be contributing more to worldwide CO2 emissions than those listed in this analysis. Still, this analysis is helpful in identifying which countries are disproportionately contributing to global CO2 emissions. Further study of these countries may determine and identify actions in these countries that may prove beneficial."
+  },
+  {
+    "objectID": "analysis.html#functions-used",
+    "href": "analysis.html#functions-used",
+    "title": "Analysis",
+    "section": "Functions Used",
+    "text": "Functions Used\ndplyr package: mutate(), group_by(), summarise(), top_n(), arrange(), desc()\ntidr package: pivot_longer()\nggplot2 package: geom_bar() , geom_line(), geom_boxplot(), facet_wrap()"
+  }
+]
